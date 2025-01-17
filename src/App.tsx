@@ -1,6 +1,9 @@
 import { createSignal, createEffect, For, onMount } from 'solid-js';
 import { Account } from './types';
 import { db } from './db';
+import { authenticator } from 'otplib';
+
+
 
 function App() {
   const [accounts, setAccounts] = createSignal<Account[]>([]);
@@ -30,9 +33,9 @@ function App() {
       const newCodes: Record<string, string> = {};
       accounts().forEach(account => {
         try {
-          newCodes[account.id] = window.otplib.authenticator.generate(account.secret);
+          newCodes[account.id] = authenticator.generate(account.secret);
         } catch (error) {
-          newCodes[account.id] = error.toString();
+          console.error(error)
         }
       });
       setCodes(newCodes);
